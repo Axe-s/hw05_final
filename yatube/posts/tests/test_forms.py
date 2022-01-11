@@ -1,13 +1,13 @@
 import shutil
 import tempfile
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
-from django.conf import settings
 from django.urls import reverse
 
-from ..models import Group, Post, Comment
+from ..models import Comment, Group, Post
 
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
@@ -43,16 +43,21 @@ class PostFormTests(TestCase):
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-        
+
     def test_create_comment(self):
         count_comment = self.post.comments.count()
         form_data = {
             'text': 'Текстовый комментарий',
         }
         response = self.authorized_client.post(
-            reverse('posts:add_comment', kwargs={'post_id': self.post.pk}), data=form_data, follow=True
+            reverse('posts:add_comment', kwargs={'post_id': self.post.pk}),
+            data=form_data,
+            follow=True,
         )
-        self.assertRedirects(response, reverse('posts:post_detail', kwargs={'post_id': self.post.pk}))        
+        self.assertRedirects(
+            response,
+            reverse('posts:post_detail', kwargs={'post_id': self.post.pk}),
+        )
         self.assertEqual(self.post.comments.count(), count_comment + 1)
         self.assertTrue(
             Comment.objects.filter(
@@ -107,7 +112,8 @@ class PostFormTests(TestCase):
         last_post = Post.objects.last()
         edit_post = response.context.get('post')
         self.assertRedirects(
-            response, reverse('posts:post_detail', kwargs={'post_id': self.post.pk})
+            response,
+            reverse('posts:post_detail', kwargs={'post_id': self.post.pk}),
         )
         self.assertEqual(last_post.text, edit_post.text)
         self.assertEqual(last_post.group, edit_post.group)

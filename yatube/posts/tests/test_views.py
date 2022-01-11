@@ -9,7 +9,7 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from ..forms import PostForm
-from ..models import Comment, Group, Post, Follow
+from ..models import Comment, Follow, Group, Post
 
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
@@ -186,21 +186,23 @@ class PostPagesTests(TestCase):
         self.assertEqual(Follow.objects.count(), follow_count + 1)
         self.authorized_client.get(
             reverse(
-                'posts:profile_unfollow', kwargs={'username': self.user.username}
+                'posts:profile_unfollow',
+                kwargs={'username': self.user.username},
             )
         )
         self.assertEqual(Follow.objects.count(), follow_count)
-        
+
     def test_follow_index_works(self):
         post = Post.objects.create(
-            text = 'Текст нового поста',
-            author = self.user1,
+            text='Текст нового поста',
+            author=self.user1,
         )
         response = self.authorized_client.get(reverse('posts:follow_index'))
         self.assertNotIn(post, response.context.get('page_obj'))
         self.authorized_client.get(
             reverse(
-                'posts:profile_follow', kwargs={'username': self.user1.username}
+                'posts:profile_follow',
+                kwargs={'username': self.user1.username},
             )
         )
         response1 = self.authorized_client.get(reverse('posts:follow_index'))
