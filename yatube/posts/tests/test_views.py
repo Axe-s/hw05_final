@@ -180,7 +180,8 @@ class PostPagesTests(TestCase):
         follow_count = Follow.objects.filter(user=self.user).count()
         self.authorized_client.get(
             reverse(
-                'posts:profile_follow', kwargs={'username': self.user1.username}
+                'posts:profile_follow',
+                kwargs={'username': self.user1.username},
             )
         )
         self.assertEqual(Follow.objects.count(), follow_count + 1)
