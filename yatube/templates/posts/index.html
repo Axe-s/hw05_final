@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load cache %}
+
+{% block title %}
+  Последние обновления на сайте
+{% endblock %}
+
+{% block content %}    
+  <h1>Последние обновления на сайте</h1>
+  {% include 'includes/switcher.html' %}
+  {% cache 20 fpage %}
+    {% for post in page_obj %}
+      <article>
+        {% include 'includes/article.html' %}
+        {% if post.group %}    
+          <a href={% url 'posts:group_lists' post.group.slug %}>Записи сообщества '{{ post.group.title }}'</a>
+        {% endif %}    
+      </article>
+      {% if not forloop.last %}
+        <hr>
+      {% endif %}
+    {% endfor %}
+  {% endcache %} 
+  {% include 'includes/paginator.html' %}  
+{% endblock %} 

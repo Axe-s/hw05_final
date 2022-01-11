@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Технологии{% endblock %}
+{% block content %}
+  <h1>Вот что я умею</h1>
+  <aside class="col-12 col-md-3">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Python
+      </li>
+      <li class="list-group-item">
+        Django
+      </li>
+      <li class="list-group-item">
+        Corel Draw
+      </li>
+      <li class="list-group-item">
+        Blender
+      </li>
+    </ul>
+  </aside>
+  <img src={% static "img/tech.jpg" %} width="400" height="300" class="d-inline-block align-top" alt="">
+{% endblock %} 
