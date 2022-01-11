@@ -21,7 +21,6 @@ class PostPagesTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
-        cls.user1 = User.objects.create_user(username='auth1')
         cls.group = Group.objects.create(
             title='Тестовый заголовок',
             slug='test-slug',
@@ -195,14 +194,14 @@ class PostPagesTests(TestCase):
     def test_follow_index_works(self):
         post = Post.objects.create(
             text='Текст нового поста',
-            author=self.user1,
+            author=self.user,
         )
         response = self.authorized_client.get(reverse('posts:follow_index'))
         self.assertNotIn(post, response.context.get('page_obj'))
         self.authorized_client.get(
             reverse(
                 'posts:profile_follow',
-                kwargs={'username': self.user1.username},
+                kwargs={'username': self.user.username},
             )
         )
         response1 = self.authorized_client.get(reverse('posts:follow_index'))

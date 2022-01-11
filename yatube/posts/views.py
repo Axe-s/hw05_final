@@ -39,7 +39,6 @@ def profile(request, username):
     following = Follow.objects.filter(
         user__username=request.user, author=author
     )
-    # following = Follow.objects.filter(user = request.user, author = author).exists()
     context = {
         'author': author,
         'total': total,
