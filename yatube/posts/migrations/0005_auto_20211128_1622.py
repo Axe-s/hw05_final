@@ -14,21 +14,29 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='group',
             name='description',
-            field=models.TextField(verbose_name='Описание сообщества'),
+            field=models.TextField(verbose_name='Описание группы'),
         ),
         migrations.AlterField(
             model_name='group',
             name='slug',
-            field=models.SlugField(unique=True, verbose_name='адрес сообщества'),
+            field=models.SlugField(unique=True, verbose_name='адрес группы'),
         ),
         migrations.AlterField(
             model_name='group',
             name='title',
-            field=models.CharField(max_length=200, verbose_name='Название сообщества'),
+            field=models.CharField(
+                max_length=200, verbose_name='Название группы'
+            ),
         ),
         migrations.AlterField(
             model_name='post',
             name='group',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='posts', to='posts.Group'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='posts',
+                to='posts.Group',
+            ),
         ),
     ]

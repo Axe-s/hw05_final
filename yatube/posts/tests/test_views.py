@@ -58,6 +58,7 @@ class PostPagesTests(TestCase):
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def setUp(self):
+        cache.clear()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.list_expected = [
@@ -129,12 +130,11 @@ class PostPagesTests(TestCase):
             reverse('posts:post_detail', kwargs={'post_id': self.post.pk})
         )
         post_object_detail = response.context.get('post')
-        post_comment = response.context.get('comments')[0]
         post_text = post_object_detail.text
         post_author = post_object_detail.author
         post_group = post_object_detail.group
         post_image = post_object_detail.image
-        post_comment_0 = post_comment.text
+        post_comment_0 = post_object_detail.comments.last().text
         list_result = [post_text, post_author, post_group, post_image]
         self._assertListEqual(list_result)
         self.assertEqual(post_comment_0, self.comment.text)
@@ -168,15 +168,15 @@ class PostPagesTests(TestCase):
         self.assertIn(self.post, response.context.get('page_obj'))
 
     def test_index_caches_posts(self):
+        response = self.client.get(reverse('posts:index'))
         last_post = Post.objects.last()
         last_post.delete()
-        response = self.client.get(reverse('posts:index'))
         self.assertIn(bytes(last_post.text, 'UTF-8'), response.content)
         cache.clear()
         response = self.client.get(reverse('posts:index'))
         self.assertNotIn(bytes(last_post.text, 'UTF-8'), response.content)
 
-    def test_profile_follow_unfollow_works(self):
+    def test_profile_follow_works(self):
         follow_count = Follow.objects.filter(user=self.user).count()
         self.authorized_client.get(
             reverse(
@@ -185,13 +185,20 @@ class PostPagesTests(TestCase):
             )
         )
         self.assertEqual(Follow.objects.count(), follow_count + 1)
+
+    def test_profile_unfollow_works(self):
+        Follow.objects.create(
+            user=self.user,
+            author=self.user1,
+        )
+        follow_count = Follow.objects.filter(user=self.user).count()
         self.authorized_client.get(
             reverse(
                 'posts:profile_unfollow',
                 kwargs={'username': self.user1.username},
             )
         )
-        self.assertEqual(Follow.objects.count(), follow_count)
+        self.assertEqual(Follow.objects.count(), follow_count - 1)
 
     def test_follow_index_works(self):
         post = Post.objects.create(
@@ -230,6 +237,9 @@ class PaginatorViewsTest(TestCase):
             ]
             * (settings.POSTS_PER_PAGE + 3)
         )
+
+    def setUp(self):
+        cache.clear()
 
     def _page_count(self, response, response1):
         page_count = {

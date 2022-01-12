@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load thumbnail %}
 {% block title %}
   Пост {{ post.text|truncatechars:30 }}
@@ -14,7 +14,7 @@
         {% if post.group %} 
         <li class="list-group-item">
           Группа: {{ post.group.title }}
-          <a href={% url 'posts:group_lists' post.group.slug %}>
+          <a href={% url "posts:group_lists" post.group.slug %}>
             все записи группы
           </a>
         </li>   
@@ -26,7 +26,7 @@
           Всего постов автора:  <span >{{ total }}</span>
         </li>
         <li class="list-group-item">
-          <a href={% url 'posts:profile' post.author %}>
+          <a href={% url "posts:profile" post.author %}>
             все посты пользователя
           </a>
         </li>
@@ -40,11 +40,11 @@
         {{ post.text|linebreaksbr }} 
       </p>
       {% if post.author == request.user %}
-        <a class="btn btn-primary" href="{% url 'posts:post_edit' post.pk %}">
+        <a class="btn btn-primary" href="{% url "posts:post_edit" post.pk %}">
           Редактировать запись
         </a>
       {% endif %}
-      {% include 'includes/comments.html' %}
+      {% include "includes/comments.html" %}
     </article>
   </div>
 {% endblock %} 

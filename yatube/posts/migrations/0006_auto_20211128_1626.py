@@ -13,6 +13,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='group',
             name='title',
-            field=models.CharField(help_text='Ограничение в 200 символов', max_length=200, verbose_name='Название сообщества'),
+            field=models.CharField(
+                help_text='Ограничение в 200 символов',
+                max_length=200,
+                verbose_name='Название группы',
+            ),
         ),
     ]

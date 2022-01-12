@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}
-  Последние публикации сообщества {{ group.title }}.
+  Последние публикации группы {{ group.title }}.
 {% endblock %}
 
 {% block content %}
@@ -11,11 +11,11 @@
   </p>
   {% for post in page_obj %}
     <article>
-      {% include 'includes/article.html' %}
+      {% include "includes/article.html" %}
     </article>
     {% if not forloop.last %}
       <hr>
     {% endif %}
   {% endfor %}
-  {% include 'includes/paginator.html' %}     
+  {% include "includes/paginator.html" %}     
 {% endblock %}

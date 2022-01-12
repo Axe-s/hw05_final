@@ -15,7 +15,7 @@ def _page_obj(request, query_set):
 
 
 def index(request):
-    posts = Post.objects.all()
+    posts = Post.objects.select_related('author', 'group').all()
     context = {
         'page_obj': _page_obj(request, posts),
     }
@@ -52,12 +52,10 @@ def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
     total = post.author.posts.count()
-    comments = post.comments.all()
     context = {
         'post': post,
         'total': total,
         'form': form,
-        'comments': comments,
     }
     return render(request, 'posts/post_detail.html', context)
 
@@ -124,8 +122,8 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
-    follow = Follow.objects.filter(user=request.user, author=author).count()
-    if author != request.user and follow == 0:
+    follow = Follow.objects.filter(user=request.user, author=author).exists()
+    if author != request.user and follow == False:
         Follow.objects.create(user=request.user, author=author)
     return redirect('posts:profile', username=username)
 
@@ -133,5 +131,7 @@ def profile_follow(request, username):
 @login_required
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
-    Follow.objects.filter(user=request.user, author=author).delete()
+    follow = Follow.objects.filter(user=request.user, author=author)
+    if follow.exists():
+        follow.delete()
     return redirect('posts:profile', username=username)

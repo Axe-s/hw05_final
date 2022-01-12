@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load cache %}
 
 {% block title %}
@@ -7,13 +7,13 @@
 
 {% block content %}    
   <h1>Последние обновления на сайте</h1>
-  {% include 'includes/switcher.html' %}
+  {% include "includes/switcher.html" %}
   {% cache 20 fpage %}
     {% for post in page_obj %}
       <article>
-        {% include 'includes/article.html' %}
+        {% include "includes/article.html" %}
         {% if post.group %}    
-          <a href={% url 'posts:group_lists' post.group.slug %}>Записи сообщества '{{ post.group.title }}'</a>
+          <a href={% url "posts:group_lists" post.group.slug %}>Записи группы "{{ post.group.title }}"</a>
         {% endif %}    
       </article>
       {% if not forloop.last %}
@@ -21,5 +21,5 @@
       {% endif %}
     {% endfor %}
   {% endcache %} 
-  {% include 'includes/paginator.html' %}  
+  {% include "includes/paginator.html" %}  
 {% endblock %} 

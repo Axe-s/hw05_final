@@ -30,6 +30,7 @@ class PostURLTests(TestCase):
         templates_url_names = {
             f'/posts/{self.post.id}/edit/': 'posts/create_post.html',
             '/create/': 'posts/create_post.html',
+            '/follow/': 'posts/follow.html',
         }
         for adress, template in templates_url_names.items():
             with self.subTest(adress=adress):

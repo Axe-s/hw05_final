@@ -2,19 +2,19 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.fields.related import ForeignKey
 
-from core.models import PubdateModel
+from .abstract_models import PubdateModel
 
 User = get_user_model()
 
 
 class Group(models.Model):
     title = models.CharField(
-        'Название сообщества',
+        'Название группы',
         max_length=200,
         help_text='Ограничение в 200 символов',
     )
-    slug = models.SlugField('адрес сообщества', unique=True)
-    description = models.TextField('Описание сообщества')
+    slug = models.SlugField('адрес группы', unique=True)
+    description = models.TextField('Описание группы')
 
     def __str__(self):
         return self.title
@@ -75,10 +75,15 @@ class Follow(models.Model):
     user = ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='follower',
+        related_name='followers',
     )
     author = ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='following',
     )
+
+    class Meta:
+        models.UniqueConstraint(
+            fields=['user', 'author'], name='unique_follow'
+        )
