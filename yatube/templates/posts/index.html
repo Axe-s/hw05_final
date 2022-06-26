@@ -8,7 +8,7 @@
 {% block content %}    
   <h1>Последние обновления на сайте</h1>
   {% include "includes/switcher.html" %}
-  {% cache 20 fpage %}
+  {% cache 20 page_index page_obj.number %}
     {% for post in page_obj %}
       <article>
         {% include "includes/article.html" %}
